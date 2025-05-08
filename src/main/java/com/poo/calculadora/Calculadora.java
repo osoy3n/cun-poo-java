@@ -4,6 +4,9 @@
 
 package com.poo.calculadora;
 
+import com.poo.calculadora.vista.Vista;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author yoos
@@ -11,6 +14,6 @@ package com.poo.calculadora;
 public class Calculadora {
 
     public static void main(String[] args) {
-        
+        SwingUtilities.invokeLater(Vista::new);
     }
 }
