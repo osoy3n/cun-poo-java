@@ -7,6 +7,7 @@ package com.poo.calculadora.vista;
 import com.poo.calculadora.modelo.ModeloCalculadora;
 import com.poo.calculadora.operaciones.*;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,7 +26,7 @@ public class Vista extends JFrame implements ActionListener {
     private final JTextField displayPrincipal;
     private final JTextField displayOperacion;
     private final ModeloCalculadora calculadora;
-    private final Map<String, Operacion> operacionesMap;
+    private final Map<String, Operacion> operaciones;
 
     private String numero1 = "";
     private String numero2 = "";
@@ -40,28 +41,37 @@ public class Vista extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
 
         calculadora = new ModeloCalculadora();
-        operacionesMap = new HashMap<>();
+        operaciones = new HashMap<>();
         inicializarOps();
 
         JPanel panelDisplay = new JPanel(new GridLayout(2, 1));
+        panelDisplay.setBackground(Color.DARK_GRAY);
+        panelDisplay.setBorder(new EmptyBorder(20, 20, 10, 20));
+
         displayOperacion = new JTextField();
         displayOperacion.setEditable(false);
         displayOperacion.setFont(new Font("Arial", Font.PLAIN, 18));
         displayOperacion.setHorizontalAlignment(JTextField.RIGHT);
-        displayOperacion.setForeground(Color.GRAY);
+        displayOperacion.setForeground(Color.LIGHT_GRAY);
+        displayOperacion.setBackground(Color.DARK_GRAY);
         displayOperacion.setBorder(null);
 
         displayPrincipal = new JTextField("0");
         displayPrincipal.setEditable(false);
-        displayPrincipal.setFont(new Font("Arial", Font.BOLD, 28));
+        displayPrincipal.setFont(new Font("Arial", Font.BOLD, 36));
         displayPrincipal.setHorizontalAlignment(JTextField.RIGHT);
+        displayPrincipal.setForeground(Color.WHITE);
+        displayPrincipal.setBackground(Color.DARK_GRAY);
         displayPrincipal.setBorder(null);
 
         panelDisplay.add(displayOperacion);
         panelDisplay.add(displayPrincipal);
         add(panelDisplay, BorderLayout.NORTH);
 
-        JPanel panelBotones = new JPanel(new GridLayout(5, 4, 5, 5));
+        JPanel panelBotones = new JPanel(new GridLayout(5, 4, 10, 10));
+        panelBotones.setBorder(new EmptyBorder(20, 20, 20, 20));
+        panelBotones.setBackground(Color.DARK_GRAY);
+
         String[] botones = {
             "AC", "^", "√", "/",
             "7", "8", "9", "x",
@@ -69,10 +79,9 @@ public class Vista extends JFrame implements ActionListener {
             "1", "2", "3", "+",
             "0", "%", ",", "="
         };
+        
         for (String texto : botones) {
-            JButton btn = new JButton(texto);
-            btn.setFont(new Font("Arial", Font.PLAIN, 20));
-            btn.addActionListener(this);
+            JButton btn = crearBoton(texto);
             panelBotones.add(btn);
         }
 
@@ -80,14 +89,47 @@ public class Vista extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    private JButton crearBoton(String texto) {
+        JButton btn = new JButton(texto) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                if (getModel().isArmed()) {
+                    g.setColor(new Color(180, 180, 180));
+                } else {
+                    g.setColor(getBackground());
+                }
+                g.fillOval(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+
+            @Override
+            protected void paintBorder(Graphics g) {
+                g.setColor(getBackground().darker());
+                g.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
+            }
+        };
+        btn.setFont(new Font("Arial", Font.BOLD, 20));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(30, 33, 41));
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(false);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setPreferredSize(new Dimension(60, 60));
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
+        btn.setVerticalAlignment(SwingConstants.CENTER);
+        btn.addActionListener(this);
+        return btn;
+    }
+
     private void inicializarOps() {
-        operacionesMap.put("/", new Dividir());
-        operacionesMap.put("x", new Multiplicar());
-        operacionesMap.put("%", new Porcentaje());
-        operacionesMap.put("^", new Potencia());
-        operacionesMap.put("√", new Raiz());
-        operacionesMap.put("-", new Resta());
-        operacionesMap.put("+", new Suma());
+        operaciones.put("/", new Dividir());
+        operaciones.put("x", new Multiplicar());
+        operaciones.put("%", new Porcentaje());
+        operaciones.put("^", new Potencia());
+        operaciones.put("√", new Raiz());
+        operaciones.put("-", new Resta());
+        operaciones.put("+", new Suma());
     }
 
     @Override
@@ -115,7 +157,7 @@ public class Vista extends JFrame implements ActionListener {
                     double n1 = Double.parseDouble(numero1.replace(",", "."));
                     double n2 = Double.parseDouble(numero2.replace(",", "."));
 
-                    Operacion op = operacionesMap.get(operador);
+                    Operacion op = operaciones.get(operador);
                     double resultado = op.calcular(n1, n2);
                     displayOperacion.setText(numero1 + " " + operador + " " + numero2 + (porcentajeUsado ? " %" : "") + " =");
                     displayPrincipal.setText(String.valueOf(resultado));
@@ -130,7 +172,7 @@ public class Vista extends JFrame implements ActionListener {
                 operador = "%";
             }
             default -> {
-                if (operacionesMap.containsKey(entrada)) {
+                if (operaciones.containsKey(entrada)) {
                     numero1 = displayPrincipal.getText();
                     operador = entrada;
                     displayOperacion.setText(numero1 + " " + operador);
