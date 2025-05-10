@@ -35,7 +35,7 @@ public class Vista extends JFrame implements ActionListener {
 
     public Vista() {
         setTitle("Calculadora");
-        setSize(400, 600);
+        setSize(360, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -45,7 +45,7 @@ public class Vista extends JFrame implements ActionListener {
         inicializarOps();
 
         JPanel panelDisplay = new JPanel(new GridLayout(2, 1));
-        panelDisplay.setBackground(Color.DARK_GRAY);
+        panelDisplay.setBackground(Color.BLACK);
         panelDisplay.setBorder(new EmptyBorder(20, 20, 10, 20));
 
         displayOperacion = new JTextField();
@@ -53,7 +53,7 @@ public class Vista extends JFrame implements ActionListener {
         displayOperacion.setFont(new Font("Arial", Font.PLAIN, 18));
         displayOperacion.setHorizontalAlignment(JTextField.RIGHT);
         displayOperacion.setForeground(Color.LIGHT_GRAY);
-        displayOperacion.setBackground(Color.DARK_GRAY);
+        displayOperacion.setBackground(Color.BLACK);
         displayOperacion.setBorder(null);
 
         displayPrincipal = new JTextField("0");
@@ -61,7 +61,7 @@ public class Vista extends JFrame implements ActionListener {
         displayPrincipal.setFont(new Font("Arial", Font.BOLD, 36));
         displayPrincipal.setHorizontalAlignment(JTextField.RIGHT);
         displayPrincipal.setForeground(Color.WHITE);
-        displayPrincipal.setBackground(Color.DARK_GRAY);
+        displayPrincipal.setBackground(Color.BLACK);
         displayPrincipal.setBorder(null);
 
         panelDisplay.add(displayOperacion);
@@ -70,7 +70,7 @@ public class Vista extends JFrame implements ActionListener {
 
         JPanel panelBotones = new JPanel(new GridLayout(5, 4, 10, 10));
         panelBotones.setBorder(new EmptyBorder(20, 20, 20, 20));
-        panelBotones.setBackground(Color.DARK_GRAY);
+        panelBotones.setBackground(Color.BLACK);
 
         String[] botones = {
             "AC", "^", "√", "/",
@@ -108,9 +108,24 @@ public class Vista extends JFrame implements ActionListener {
                 g.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
             }
         };
+
         btn.setFont(new Font("Arial", Font.BOLD, 20));
         btn.setForeground(Color.WHITE);
-        btn.setBackground(new Color(30, 33, 41));
+
+        switch (texto) {
+            case "AC", "^", "√" -> {
+                btn.setBackground(new Color(92, 92, 95));
+            }
+        
+            case "/", "x", "-", "+", "=" -> {
+                btn.setBackground(new Color(255, 159, 10));
+            }
+
+            default -> {
+                btn.setBackground(new Color(42, 42, 44));
+            }
+        }
+
         btn.setContentAreaFilled(false);
         btn.setOpaque(false);
         btn.setFocusPainted(false);
