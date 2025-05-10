@@ -35,7 +35,7 @@ public class Vista extends JFrame implements ActionListener {
 
     public Vista() {
         setTitle("Calculadora");
-        setSize(360, 600);
+        setSize(470, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -174,7 +174,11 @@ public class Vista extends JFrame implements ActionListener {
 
                     Operacion op = operaciones.get(operador);
                     double resultado = op.calcular(n1, n2);
-                    displayOperacion.setText(numero1 + " " + operador + " " + numero2 + (porcentajeUsado ? " %" : "") + " =");
+                    if (porcentajeUsado) {
+                        displayOperacion.setText(numero1 + " " + "x" + " " + numero2 + operador + " =");
+                    } else {
+                        displayOperacion.setText(numero1 + " " + operador + " " + numero2 + " =");
+                    }
                     displayPrincipal.setText(String.valueOf(resultado));
                 }
                 numero1 = "";
