@@ -17,6 +17,6 @@ public class Raiz extends Operacion {
     @Override
     public double calcular(double a, double b) {
         if (b == 0) throw new ArithmeticException("El grado de la raíz no puede ser 0");
-        return Math.pow(a, 1.0 / b);
+        return Math.pow(b, 1.0 / a);
     }
 }
